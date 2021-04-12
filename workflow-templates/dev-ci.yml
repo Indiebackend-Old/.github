@@ -1,4 +1,4 @@
-name: Build and push on release
+name: Build dev-latest image
 
 on:
   push:
@@ -24,3 +24,7 @@ jobs:
       #   run: 'docker history --human --format "{{.CreatedBy}}: {{.Size}}" rg.fr-par.scw.cloud/indiebackend/$DOCKER_IMAGE_NAME:${{ github.run_number }}'
       - name: Push image
         run: docker push rg.fr-par.scw.cloud/indiebackend/$DOCKER_IMAGE_NAME:${{ github.run_number }} && docker push rg.fr-par.scw.cloud/indiebackend/$DOCKER_IMAGE_NAME:dev-latest
+      - name: Clean old images
+        uses: Indiebackend/Delete-Old-Images@v1
+        with:
+          scw-token: ${{ secrets.SCW_SECRET_TOKEN }}
