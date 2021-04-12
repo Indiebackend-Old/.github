@@ -1,0 +1,5 @@
+{
+    "name": "Dev CI Worklow",
+    "description": "Build image and push it to the contianer registry as \"dev-latest\".",
+    "iconName": "example-icon"
+}

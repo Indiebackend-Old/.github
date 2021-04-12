@@ -1,0 +1,26 @@
+name: Build and push on release
+
+on:
+  push:
+    branches:
+      - master
+
+env:
+  REGISTRY_KEY: ${{ secrets.SCW_SECRET_TOKEN }}
+  DOCKER_IMAGE_NAME: ${{ secrets.DOCKER_IMAGE_NAME}}
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - name: Login to registry
+        run: echo $REGISTRY_KEY | docker login rg.fr-par.scw.cloud/indiebackend -u nologin --password-stdin
+      - name: Build Docker image
+        run: docker build . --file Dockerfile --tag rg.fr-par.scw.cloud/indiebackend/$DOCKER_IMAGE_NAME:${{ github.run_number }} --tag rg.fr-par.scw.cloud/indiebackend/$DOCKER_IMAGE_NAME:dev-latest
+      # - name: Image size
+      #   run: docker images | grep $DOCKER_IMAGE_NAME
+      # - name: Docker history
+      #   run: 'docker history --human --format "{{.CreatedBy}}: {{.Size}}" rg.fr-par.scw.cloud/indiebackend/$DOCKER_IMAGE_NAME:${{ github.run_number }}'
+      - name: Push image
+        run: docker push rg.fr-par.scw.cloud/indiebackend/$DOCKER_IMAGE_NAME:${{ github.run_number }} && docker push rg.fr-par.scw.cloud/indiebackend/$DOCKER_IMAGE_NAME:dev-latest
